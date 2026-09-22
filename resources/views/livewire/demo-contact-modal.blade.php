@@ -16,7 +16,7 @@
 
     {{-- Modal overlay --}}
     @if($open)
-        <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/60">
+        <div class="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-gray-900/60">
             <div class="w-full max-w-lg rounded-xl bg-white shadow-2xl" wire:click.stop>
                 <div class="flex items-start justify-between p-6 pb-0">
                     <div>

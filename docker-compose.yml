@@ -1,47 +1,19 @@
 services:
-  # Runs once: composer install + migrate. app/worker/scheduler wait for this.
-  setup:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
-    working_dir: /var/www/html
-    command: >
-      sh -c "composer install --no-interaction --prefer-dist --no-progress
-      && mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache
-      && chmod -R 775 storage bootstrap/cache
-      && grep -qE '^APP_KEY=base64:' .env 2>/dev/null || php artisan key:generate --ansi --force
-      && php artisan migrate --force
-      && php artisan db:seed --force"
-    volumes:
-      - .:/var/www/html
-    env_file: .env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      db:
-        condition: service_healthy
-
   app:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
     working_dir: /var/www/html
-    command: php artisan serve --host=0.0.0.0 --port=8005
-    restart: unless-stopped
     ports:
       - "${APP_PORT:-8005}:8005"
     volumes:
-      - .:/var/www/html
+      - app_storage:/var/www/html/storage
     env_file: .env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
-      assets:
-        condition: service_completed_successfully
-      setup:
-        condition: service_completed_successfully
 
   worker:
     build:
@@ -51,42 +23,29 @@ services:
     command: php artisan queue:work --tries=3 --backoff=5
     restart: unless-stopped
     volumes:
-      - .:/var/www/html
+      - app_storage:/var/www/html/storage
     env_file: .env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
-      setup:
-        condition: service_completed_successfully
 
   scheduler:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
     working_dir: /var/www/html
-    command: >
-      sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
+    command: bash -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
     restart: unless-stopped
     volumes:
-      - .:/var/www/html
+      - app_storage:/var/www/html/storage
     env_file: .env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy
-      setup:
-        condition: service_completed_successfully
-
-  # One-off asset build (Tailwind/Vite). Runs once per deploy and exits.
-  assets:
-    image: node:20-alpine
-    working_dir: /var/www/html
-    command: sh -c "npm ci && npm run build"
-    volumes:
-      - .:/var/www/html
 
   db:
     image: pgvector/pgvector:pg16
@@ -108,3 +67,4 @@ services:
 
 volumes:
   db-data:
+  app_storage:
