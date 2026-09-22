@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Support\Roles;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -12,6 +13,12 @@ class UserSeeder extends Seeder
     public function run(): array
     {
         $users = [];
+
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'superadmin@gmail.com'],
+            ['name' => 'Super Admin', 'password' => Hash::make('nm@2001')]
+        );
+        $superAdmin->syncRoles([Roles::SUPER_ADMIN]);
 
         $users[Roles::OWNER] = User::updateOrCreate(
             ['email' => 'admin@propertymanager.local'],

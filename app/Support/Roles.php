@@ -14,7 +14,10 @@ class Roles
 
     public const TENANT = 'tenant';
 
+    public const SUPER_ADMIN = 'Super Admin';
+
     public const ALL = [
+        self::SUPER_ADMIN,
         self::OWNER,
         self::MANAGER,
         self::MAINTENANCE_COORDINATOR,
@@ -23,6 +26,7 @@ class Roles
     ];
 
     public const LABELS = [
+        self::SUPER_ADMIN => 'Super Admin',
         self::OWNER => 'Property Owner',
         self::MANAGER => 'Property Manager',
         self::MAINTENANCE_COORDINATOR => 'Maintenance Coordinator',

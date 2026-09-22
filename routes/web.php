@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SignalController;
 use App\Http\Controllers\TenancyController;
+use App\Livewire\SuperAdmin\ContactRequests as SuperAdminContacts;
 use App\Support\Roles;
 use Illuminate\Support\Facades\Route;
 
@@ -57,4 +58,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/settings/signals/{signal}/toggle', [SettingsController::class, 'toggleSignal'])->name('settings.signals.toggle');
         Route::post('/settings/users', [SettingsController::class, 'storeUser'])->name('settings.users.store');
     });
+
+    Route::get('/super-admin/contacts', SuperAdminContacts::class)
+        ->name('super-admin.contacts')
+        ->middleware('role:Super Admin');
 });
