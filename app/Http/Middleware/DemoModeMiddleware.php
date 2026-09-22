@@ -26,12 +26,13 @@ class DemoModeMiddleware
             return $next($request);
         }
 
-        // Livewire and AJAX requests: return JSON so the frontend hook can catch it
-        if ($request->header('X-Livewire') || $request->ajax() || $request->wantsJson()) {
-            return response()->json(['message' => 'Demo mode: write actions are disabled.'], 403);
+        // Livewire requests: let through — client-side fetch override is the gate.
+        // Never return 403 to Livewire; it renders the JSON body as component HTML.
+        if ($request->header('X-Livewire')) {
+            return $next($request);
         }
 
-        // Regular browser form submissions: redirect back with a flash message
+        // Regular browser form POST: redirect back with a flash message
         return back()->with('demo_warning', 'This is a live demo. Write actions are disabled.');
     }
 }
