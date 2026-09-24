@@ -9,8 +9,9 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
     env_file: .env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+      - nirmantra_shared
     depends_on:
       db:
         condition: service_healthy
@@ -25,8 +26,9 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
     env_file: .env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+      - nirmantra_shared
     depends_on:
       db:
         condition: service_healthy
@@ -68,3 +70,7 @@ services:
 volumes:
   db-data:
   app_storage:
+
+networks:
+  nirmantra_shared:
+    external: true
