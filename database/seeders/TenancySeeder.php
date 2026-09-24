@@ -156,7 +156,11 @@ class TenancySeeder extends Seeder
 
                 $storedName = 'tenancy-'.$tenancy->id.'-'.Str::random(8).'.pdf';
                 Storage::disk('leases')->put($storedName, $pdfBinary);
-                $tenancy->forceFill(['lease_file_path' => $storedName])->save();
+                $tenancy->forceFill([
+                    'lease_file_path' => $storedName,
+                    'lease_original_filename' => Str::slug($def['tenant_name']).'-lease-agreement.pdf',
+                    'lease_uploaded_at' => $tenancy->created_at,
+                ])->save();
 
                 $ingestion->ingest($tenancy, Storage::disk('leases')->path($storedName));
             }

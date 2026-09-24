@@ -31,6 +31,12 @@ class LeaseAssistant extends Component
         $this->answer = null;
         $this->error = null;
 
+        if ($this->tenancy->leaseFailed()) {
+            $this->error = 'Processing this lease failed. Retry it from the Lease document panel above, then ask again.';
+
+            return;
+        }
+
         if (! $this->tenancy->leaseIsEmbedded()) {
             $this->error = 'This tenancy\'s lease has not finished processing yet — try again shortly.';
 

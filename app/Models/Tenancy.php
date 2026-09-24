@@ -22,7 +22,10 @@ class Tenancy extends Model
         'payment_due_day',
         'deposit_amount',
         'lease_file_path',
+        'lease_original_filename',
+        'lease_uploaded_at',
         'lease_embedded_at',
+        'lease_processing_error',
         'status',
         'end_reason',
         'created_by',
@@ -33,6 +36,7 @@ class Tenancy extends Model
         return [
             'lease_start' => 'date',
             'lease_end' => 'date',
+            'lease_uploaded_at' => 'datetime',
             'lease_embedded_at' => 'datetime',
             'monthly_rent' => 'decimal:2',
             'deposit_amount' => 'decimal:2',
@@ -89,6 +93,11 @@ class Tenancy extends Model
     public function leaseIsEmbedded(): bool
     {
         return ! empty($this->lease_embedded_at);
+    }
+
+    public function leaseFailed(): bool
+    {
+        return ! empty($this->lease_processing_error);
     }
 
     public function nextRentDueDate(): \Carbon\Carbon
