@@ -36,12 +36,14 @@ class Roles
 
     /** Roles that can see financial data and lease documents. */
     public const BACK_OFFICE = [
+        self::SUPER_ADMIN,
         self::OWNER,
         self::MANAGER,
     ];
 
     /** Roles that operate across all properties (not scoped to one owner/tenancy). */
     public const STAFF = [
+        self::SUPER_ADMIN,
         self::OWNER,
         self::MANAGER,
         self::MAINTENANCE_COORDINATOR,
