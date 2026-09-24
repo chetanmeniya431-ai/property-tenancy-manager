@@ -1,4 +1,5 @@
-<div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+<div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+     @if($tenancy->hasLease() && !$tenancy->leaseIsEmbedded() && !$tenancy->leaseFailed()) wire:poll.3s="$refresh" @endif>
     <h3 class="text-sm font-semibold text-slate-700">Lease document</h3>
 
     @if($tenancy->hasLease())
@@ -34,9 +35,9 @@
         <p class="mt-1 text-xs text-slate-500">No lease uploaded yet.</p>
     @endif
 
-    @if($justUploaded)
+    @if($justUploaded && !$tenancy->leaseIsEmbedded() && !$tenancy->leaseFailed())
         <p class="mt-2 rounded-md bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-            Lease uploaded — it's being chunked and embedded now via the queue.
+            Lease uploaded — it's being chunked and embedded now via the queue. This updates automatically.
         </p>
     @endif
 
