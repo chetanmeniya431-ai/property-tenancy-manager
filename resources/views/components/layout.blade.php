@@ -116,7 +116,7 @@
     @livewireScripts
 
 @if($isDemo)
-<script>
+<script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
 (function () {
     /* ================================================================
      * DEMO MODE GUARD v2 — fetch interception
@@ -151,8 +151,10 @@
     var _fetch = window.fetch;
     window.fetch = function (url, opts) {
         var urlStr = typeof url === 'string' ? url : (url && url.href ? url.href : String(url));
-        var isLwUpdate = opts && opts.method === 'POST' && urlStr.indexOf('livewire/update') !== -1;
-        var isLwUpload = opts && opts.method === 'POST' && urlStr.indexOf('livewire/upload') !== -1;
+        // Livewire 4 serves its endpoints under /livewire-{hash}/ (hash derived from APP_KEY)
+        var isPost = opts && String(opts.method).toUpperCase() === 'POST';
+        var isLwUpdate = isPost && /\/livewire(-[a-f0-9]+)?\/update(\?|$)/.test(urlStr);
+        var isLwUpload = isPost && /\/livewire(-[a-f0-9]+)?\/upload-file(\?|$)/.test(urlStr);
 
         if (!isLwUpdate && !isLwUpload) return _fetch.apply(this, arguments);
 
