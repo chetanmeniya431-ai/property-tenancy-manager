@@ -53,31 +53,35 @@
 
         <div class="lg:flex">
             <!-- Desktop sidebar -->
-            <aside class="hidden w-64 shrink-0 border-r border-slate-200 bg-white px-4 py-6 lg:block">
-                <div class="mb-8 px-2">
+            <aside class="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:sticky lg:flex lg:h-screen lg:max-h-screen lg:flex-col"
+                   style="{{ $isDemo ? 'top: 40px' : 'top: 0' }}">
+                <div class="shrink-0 px-4 pt-6 pb-2">
                     <span class="text-base font-semibold text-sky-700">Property Tenancy Manager</span>
                     <p class="mt-1 text-xs text-slate-500">Hartwell Property Management</p>
                 </div>
-                <x-nav :items="$navItems" />
 
-                @role('Super Admin')
-                <div class="mt-6 border-t border-slate-200 pt-4 space-y-1">
-                    <a href="{{ route('super-admin.contacts') }}"
-                       class="flex items-center gap-2 rounded-md px-2 py-2 text-sm font-medium {{ request()->routeIs('super-admin.*') ? 'bg-sky-50 text-sky-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
-                        </svg>
-                        Contact Requests
-                        @php $newCount = \App\Models\ContactRequest::where('status','new')->count(); @endphp
-                        @if($newCount > 0)
-                            <span class="ml-auto inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">{{ $newCount }}</span>
-                        @endif
-                    </a>
+                <div class="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+                    <x-nav :items="$navItems" />
+
+                    @role('Super Admin')
+                    <div class="mt-6 border-t border-slate-200 pt-4 space-y-1">
+                        <a href="{{ route('super-admin.contacts') }}"
+                           class="flex items-center gap-2 rounded-md px-2 py-2 text-sm font-medium {{ request()->routeIs('super-admin.*') ? 'bg-sky-50 text-sky-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                            <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                            </svg>
+                            Contact Requests
+                            @php $newCount = \App\Models\ContactRequest::where('status','new')->count(); @endphp
+                            @if($newCount > 0)
+                                <span class="ml-auto inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">{{ $newCount }}</span>
+                            @endif
+                        </a>
+                    </div>
+                    @endrole
                 </div>
-                @endrole
 
                 @if($user)
-                <div class="mt-8 border-t border-slate-200 px-2 pt-4">
+                <div class="shrink-0 border-t border-slate-200 px-4 pt-4 pb-6">
                     <p class="text-sm font-medium text-slate-900">{{ $user->name }}</p>
                     <p class="text-xs text-slate-500">{{ \App\Support\Roles::LABELS[$user->roles->first()?->name] ?? '' }}</p>
                     <form method="POST" action="{{ route('logout') }}" class="mt-3">
